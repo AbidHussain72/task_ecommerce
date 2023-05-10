@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="Description" content="Enter your description here" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+
+  <title>E-Commerce</title>
+</head>
+
+<body ng-app="mainApp" ng-controller="mainController">
+  <div class="row">
+    <div class="col-md-3 col-lg-3 col-sm-6 col-sm-1 d-sm-none d-lg-block">
+      <div class="accordion accordion-flush border" >
+        <div ng-repeat="item in filters" class="accordion-item ">
+          <h2 class="accordion-header" id="flush-heading{{$index + 1}}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{$index + 1}}" aria-expanded="false" aria-controls="flush-collapse{{$index + 1}}">
+              {{item.filter_lable}}
+            </button>
+          </h2>
+          <div id="flush-collapse{{$index + 1}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{$index + 1}}">
+            <div class="accordion-body">
+              <ul class="list-group">
+                <li ng-repeat="option in item.options" class="list-group-item borderless">
+                  <input class="form-check-input" ng-change="filterProduct(option.value)" ng-model="isChecked[option.checked]" id="{{option.value}}" type="checkbox">
+                  <label for="" class="ms-3">
+                     {{ option.value}}
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 col-lg-9 col-sm-12">
+      <div class="row">
+        <div ng-repeat="rec in products" class="col-md-4 col-lg-3 col-sm-11 card borderless p-2">
+          <img src="{{rec.image}}" class="card-img-top" alt="...">
+          <p class="card-text mt-2">{{rec.name}}</p>
+          <p>Rs. {{rec.price}}</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+</body>
+<script>
+  var app = angular.module('mainApp', []);
+  app.controller('mainController', function($scope, $http) {
+    $scope.getAllProducts = () => {
+      
+      let url = "https://pim.wforwoman.com/pim/pimresponse.php/?service=category&store=1&url_key=top-wear-kurtas&page=1&count=20&sort_by=&sort_dir=desc&filter="
+      $http({
+        method: "GET",
+        url: url,
+        header: {
+          "Content-type": "application/json"
+        }
+      }).then((res)=>{
+          let allData = res.data.result;
+          console.warn(allData)
+          $scope.filters = allData.filters
+          console.warn("Filters",$scope.filters)
+          $scope.products = allData.products;
+          let AllProducts = allData.products;
+          console.warn("Response",$scope.products)
+
+          $scope.filterProduct = (option)=>{
+             $scope.products= ""
+            
+             if(jQuery(`#${option}:checked`)){
+                console.log("Filter BY",option)
+                $scope.filterProducts = AllProducts.filter(item =>{
+                return item.category == option;
+                return item.color == option;
+                return item.length == option;
+                return item.price .includes(option);
+                return item.category == option;
+                return item.category == option;
+                return item.category == option;
+                return item.category == option;
+                return item.category == option;
+                return item.category == option;
+                })
+
+                console.warn("Filtred Products",$scope.filterProducts)
+                $scope.products = $scope.filterProducts
+             }else{
+                $scope.products = AllProducts;
+                console.log($scope.products)
+             }
+               
+                
+          }
+
+      })
+    }
+
+    $scope.getAllProducts()
+
+    
+
+
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
+
+
+
+</html>
